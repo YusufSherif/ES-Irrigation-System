@@ -73,7 +73,8 @@ static void MX_ADC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t uart_buffer;
+uint8_t uart_filled;
 /* USER CODE END 0 */
 
 /**
@@ -107,6 +108,7 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
+	__HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
 	HAL_I2C_IsDeviceReady(&hi2c1, 0xD0, 10, HAL_MAX_DELAY);
 	
 	for(uint8_t i = 0; i<PLANT_COUNT; i++) {

@@ -27,7 +27,9 @@ void TaskMoistureSensor(Plant* p){
 	volatile uint32_t result = HAL_ADC_GetValue(&hadc1);
 	char outbuf[17] = {0};
 	sprintf(outbuf,"Moist %d: %d\r\n",p->index, result);
+	#ifdef DEBUG
 	HAL_UART_Transmit(&huart1,outbuf, strlen(outbuf)*sizeof(uint8_t), HAL_MAX_DELAY);
+	#endif
 	if (result > moisture_threshold_upper)
 	{
 		needs_water = 1;

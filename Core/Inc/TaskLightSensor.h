@@ -26,7 +26,9 @@ void TaskLightSensor(){
 	HAL_ADC_PollForConversion(&hadc1, 100);
 	volatile uint32_t result = HAL_ADC_GetValue(&hadc1);	char outbuf[17] = {0};
 	sprintf(outbuf,"Light: %d\r\n",result);
+	#ifdef DEBUG
 	HAL_UART_Transmit(&huart1,outbuf, strlen(outbuf)*sizeof(uint8_t), HAL_MAX_DELAY);
+	#endif
 	if ((result > dark_threshold) || (HAL_GPIO_ReadPin(LEDLightOutput_GPIO_Port, LEDLightOutput_Pin)))
 	{
 		light_time++;

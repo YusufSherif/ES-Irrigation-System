@@ -8,8 +8,9 @@ void TaskTemp(){
 	 float t = ((temp[0])+(temp[1]>>6)/4.0);
 	 char y[20];
 	 sprintf(y,"Temp: %.2f\r\n",t);
-	//	HAL_UART_Transmit(&huart1,outbuf,7+strlen(outbuf)*sizeof(uint8_t), HAL_MAX_DELAY);
+	 #ifdef DEBUG
 	 HAL_UART_Transmit(&huart1,y, strlen(y)*sizeof(uint8_t), HAL_MAX_DELAY);
+	#endif
 	 if(t>temp_threshold)
 		 is_hot = 1;
 	 else

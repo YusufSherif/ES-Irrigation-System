@@ -58,5 +58,7 @@ uint16_t PlantsOutputPins[] = {ValveOutput_Pin, OutputPlant1_Pin,OutputPlant2_Pi
 
 Plant plants[PLANT_COUNT] = {0};
 
+#define DEBUG
+#undef DEBUG
 
 #endif

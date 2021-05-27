@@ -56,10 +56,19 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
-
+extern uint8_t uart_buffer;
+extern uint8_t uart_filled;
+extern uint8_t needs_water;
+extern uint8_t is_hot;
+extern unsigned int temp_threshold;
+extern unsigned int moisture_threshold_upper;
+extern unsigned int moisture_threshold_lower;
+extern unsigned int dark_threshold;
+extern unsigned int light_time_threshold;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -212,6 +221,78 @@ void TIM1_UP_TIM16_IRQHandler(void)
   /* USER CODE BEGIN TIM1_UP_TIM16_IRQn 1 */
 
   /* USER CODE END TIM1_UP_TIM16_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+	if(HAL_UART_Receive(&huart1, &uart_buffer, sizeof(uint8_t), 1000) == HAL_OK) {
+		uart_filled = 1;
+			volatile uint8_t operator_ = uart_buffer;
+			//uint8_t digit_1 = buffer[0] - '0', digit_2 = buffer[2] - '0';
+			switch (operator_) /* switch on the operation */
+			{
+			char test[5] = "";
+			case ('T'):
+				temp_threshold++;
+				break;
+			case ('E'):
+				temp_threshold--;
+				break;
+			case ('M'):
+				moisture_threshold_upper++;
+				break;
+			case ('O'):
+				moisture_threshold_upper--;
+				break;
+			case ('X'):
+				moisture_threshold_lower++;
+				break;
+			case ('Z'):
+				moisture_threshold_lower--;
+				break;
+			case ('D'):
+				dark_threshold++;
+				break;
+			case ('A'):
+				dark_threshold--;
+				break;
+			case ('L'):
+				light_time_threshold++;
+			sprintf(test, "%05d", temp_threshold);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+				break;
+			case ('I'):
+				light_time_threshold--;
+				break;
+			case ('t'):
+				sprintf(test, "%05d", temp_threshold);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+				break;
+			case ('m'):
+				sprintf(test, "%05d", moisture_threshold_upper);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+				break;
+			case ('l'):
+				sprintf(test, "%05d", light_time_threshold);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			case ('d'):
+				sprintf(test, "%05d", dark_threshold);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			case ('v'):
+				sprintf(test, "%05d", moisture_threshold_lower);
+				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+				break;
+		}
+	}
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

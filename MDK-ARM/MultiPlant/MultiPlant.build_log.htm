@@ -27,7 +27,32 @@ Project File Date:  05/27/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'MultiPlant'
-"MultiPlant\MultiPlant.axf" - 0 Error(s), 0 Warning(s).
+compiling stm32l4xx_it.c...
+../Core/Src/stm32l4xx_it.c(238): warning:  #185-D: dynamic initialization in unreachable code
+  			char test[5] = "";
+../Core/Src/stm32l4xx_it.c(265): warning:  #223-D: function "sprintf" declared implicitly
+  			sprintf(test, "%05d", temp_threshold);
+../Core/Src/stm32l4xx_it.c(266): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(273): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(277): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(281): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(284): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(287): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+../Core/Src/stm32l4xx_it.c(236): warning:  #546-D: transfer of control bypasses initialization of:
+            variable "test"  (declared at line 238)
+  			switch (operator_) /* switch on the operation */
+  			^
+../Core/Src/stm32l4xx_it.c: 9 warnings, 0 errors
+linking...
+Program Size: Code=17020 RO-data=500 RW-data=112 ZI-data=1480  
+FromELF: creating hex file...
+"MultiPlant\MultiPlant.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +75,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.4.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:18
 </pre>
 </body>
 </html>
