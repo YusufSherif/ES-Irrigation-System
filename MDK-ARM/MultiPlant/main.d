@@ -40,5 +40,10 @@ multiplant\main.o: ../Core/Inc/TaskTemp.h
 multiplant\main.o: ../Core/Inc/common.h
 multiplant\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 multiplant\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+multiplant\main.o: ../Core/Inc/DelayedQueue.h
+multiplant\main.o: ../Core/Inc/Task.h
+multiplant\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+multiplant\main.o: ../Core/Inc/ReadyQueue.h
+multiplant\main.o: ../Core/Inc/Header.h
 multiplant\main.o: ../Core/Inc/TaskMoistureSensor.h
 multiplant\main.o: ../Core/Inc/TaskLightSensor.h

@@ -1,5 +1,9 @@
 --cpu=Cortex-M4.fp.sp --branchpatch=sdcomp-29491-629360
 "multiplant\startup_stm32l432xx.o"
+"multiplant\delayedqueue.o"
+"multiplant\readyqueue.o"
+"multiplant\task.o"
+"multiplant\header.o"
 "multiplant\main.o"
 "multiplant\stm32l4xx_it.o"
 "multiplant\stm32l4xx_hal_msp.o"

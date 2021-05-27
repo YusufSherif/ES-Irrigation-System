@@ -34,6 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define usTIM TIM6
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,6 +47,8 @@ ADC_HandleTypeDef hadc1;
 
 I2C_HandleTypeDef hi2c1;
 
+TIM_HandleTypeDef htim6;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -56,9 +59,9 @@ unsigned int temp_threshold = 26;
 unsigned int moisture_threshold_upper = 3500;
 unsigned int moisture_threshold_lower = 3000;
 unsigned int dark_threshold = 1000;
-unsigned int light_time_threshold = 600;
+unsigned int light_time_threshold = 864;
 
-
+volatile unsigned int time_elapsed = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -67,7 +70,9 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_ADC1_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
+
 
 /* USER CODE END PFP */
 
@@ -75,6 +80,10 @@ static void MX_ADC1_Init(void);
 /* USER CODE BEGIN 0 */
 uint8_t uart_buffer;
 uint8_t uart_filled;
+uint8_t tick_50ms_elapsed = 0;
+
+DelayedQueue delayedQueue;
+ReadyQueue readyQueue;
 /* USER CODE END 0 */
 
 /**
@@ -99,7 +108,8 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+	
+	
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -107,13 +117,36 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C1_Init();
   MX_ADC1_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+	HAL_TIM_Base_Start_IT(&htim6);
 	__HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
 	HAL_I2C_IsDeviceReady(&hi2c1, 0xD0, 10, HAL_MAX_DELAY);
 	
 	for(uint8_t i = 0; i<PLANT_COUNT; i++) {
 	initPlant(&plants[i], i, PlantsInputChannels[i], PlantsOutputPorts[i], PlantsOutputPins[i]);
 	}
+	
+	Init(); // initialize the scheduler data structures
+	QueTask(&readyQueue, &TaskTemp, 0);
+	QueTask(&readyQueue, &TaskFan, 0);
+	
+	QueTask(&readyQueue, &TMS0, 0);
+	QueTask(&readyQueue, &TMS1, 0);
+	QueTask(&readyQueue, &TMS2, 0);
+	QueTask(&readyQueue, &TMS3, 0);
+	QueTask(&readyQueue, &TMS4, 0);
+	QueTask(&readyQueue, &TMS5, 0);
+
+	QueTask(&readyQueue, &TSV0, 0);
+	QueTask(&readyQueue, &TSV1, 0);
+	QueTask(&readyQueue, &TSV2, 0);
+	QueTask(&readyQueue, &TSV3, 0);
+	QueTask(&readyQueue, &TSV4, 0);
+	QueTask(&readyQueue, &TSV5, 0);
+	
+	QueTask(&readyQueue, &TaskLightSensor, 0);
+	
 	
   /* USER CODE END 2 */
 
@@ -124,14 +157,22 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		TaskTemp();
-		for(uint8_t i = 0; i< PLANT_COUNT; i++) {
-			TaskMoistureSensor(&plants[i]);
-			TaskSetValve(&plants[i]);
-		}
-		TaskLightSensor();
-		TaskFan();
-		HAL_Delay(1000);
+		
+		if (time_elapsed) {
+			time_elapsed = 0;
+			DispatchDelayed(&delayedQueue,&readyQueue);
+			tick_50ms_elapsed = 0;
+    }
+		Dispatch(&readyQueue);
+		
+//		TaskTemp();
+//		for(uint8_t i = 0; i< PLANT_COUNT; i++) {
+//			TaskMoistureSensor(&plants[i]);
+//			TaskSetValve(&plants[i]);
+//		}
+//		TaskLightSensor();
+//		TaskFan();
+//		HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -378,6 +419,44 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 4000-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 500;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
 
 }
 

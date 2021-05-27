@@ -1,6 +1,8 @@
 #ifndef __TASKTEMP_H
 #define __TASKTEMP_H
 #include "common.h"
+#include "Header.h"
+
 
 void TaskTemp(){
 	 uint8_t temp[2];
@@ -15,6 +17,8 @@ void TaskTemp(){
 		 is_hot = 1;
 	 else
 		 is_hot = 0;
+	 
+	 ReRunMe(&TaskTemp, 10, 0);
 }
 
 void TaskFan(){
@@ -24,6 +28,7 @@ void TaskFan(){
 	} else {
 		HAL_GPIO_WritePin(FanOutput_GPIO_Port,FanOutput_Pin,0);
 	}
+	ReRunMe(&TaskFan, 10, 0);
 }
 
 

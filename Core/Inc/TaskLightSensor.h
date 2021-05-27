@@ -1,9 +1,12 @@
 #ifndef __TASKLIGHTSENSOR_H
 #define __TASKLIGHTSENSOR_H
 #include "common.h"
+#include "Header.h"
+
 
 void ADC_Select_LightSensor (void)
 {
+	HAL_Delay(10);
 	ADC_ChannelConfTypeDef sConfig = {0};
 	sConfig.Channel = ADC_CHANNEL_12;
 	sConfig.Rank = ADC_REGULAR_RANK_1;
@@ -40,12 +43,12 @@ void TaskLightSensor(){
 	} else {
 		HAL_GPIO_WritePin(LEDLightOutput_GPIO_Port, LEDLightOutput_Pin,0);
 	}
-	if (day_count == 1440){
+	if (day_count == 3456){
 		 day_count = 0;
 		 light_time = 0;
 	}
 	HAL_ADC_Stop(&hadc1);
-
+	ReRunMe(&TaskLightSensor, 10, 0);
 }
 
 #endif

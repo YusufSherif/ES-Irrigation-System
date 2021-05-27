@@ -1,10 +1,12 @@
 #ifndef __TASKMOISTURE_H
 #define __TASKMOISTURE_H
 #include "common.h"
+#include "Header.h"
 
 
 void ADC_Select_MoistureSensor (unsigned long channel)
 {
+	HAL_Delay(10);
 	ADC_ChannelConfTypeDef sConfig = {0};
 	  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	  */
@@ -48,5 +50,55 @@ void TaskSetValve(Plant* p){
 	}
 }
 
+void TMS0(){
+	TaskMoistureSensor(&plants[0]);
+	ReRunMe(&TMS0, 10, 0);
+}
+void TMS1(){
+	TaskMoistureSensor(&plants[1]);
+	ReRunMe(&TMS1, 10, 0);
+}
+void TMS2(){
+	TaskMoistureSensor(&plants[2]);
+	ReRunMe(&TMS2, 10, 0);
+}
+void TMS3(){
+	TaskMoistureSensor(&plants[3]);
+	ReRunMe(&TMS3, 10, 0);
+}
+void TMS4(){
+	TaskMoistureSensor(&plants[4]);
+	ReRunMe(&TMS4, 10, 0);
+}
+void TMS5(){
+	TaskMoistureSensor(&plants[5]);
+	ReRunMe(&TMS5, 10, 0);
+}
+
+void TSV0(){
+	TaskSetValve(&plants[0]);
+	ReRunMe(&TSV0, 10, 0);
+}
+
+void TSV1(){
+	TaskSetValve(&plants[1]);
+	ReRunMe(&TSV1, 10, 0);
+}
+void TSV2(){
+	TaskSetValve(&plants[2]);
+	ReRunMe(&TSV2, 10, 0);
+}
+void TSV3(){
+	TaskSetValve(&plants[3]);
+	ReRunMe(&TSV3, 10, 0);
+}
+void TSV4(){
+	TaskSetValve(&plants[4]);
+	ReRunMe(&TSV4, 10, 0);
+}
+void TSV5(){
+	TaskSetValve(&plants[5]);
+	ReRunMe(&TSV5, 10, 0);
+}
 
 #endif

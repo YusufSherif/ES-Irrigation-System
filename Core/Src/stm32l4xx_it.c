@@ -56,6 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim1;
 
@@ -69,6 +70,7 @@ extern unsigned int moisture_threshold_upper;
 extern unsigned int moisture_threshold_lower;
 extern unsigned int dark_threshold;
 extern unsigned int light_time_threshold;
+extern volatile unsigned int time_elapsed;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -194,7 +196,6 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
   /* USER CODE END SysTick_IRQn 0 */
 
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -231,61 +232,61 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
 	if(HAL_UART_Receive(&huart1, &uart_buffer, sizeof(uint8_t), 1000) == HAL_OK) {
 		uart_filled = 1;
-			volatile uint8_t operator_ = uart_buffer;
-			//uint8_t digit_1 = buffer[0] - '0', digit_2 = buffer[2] - '0';
-			switch (operator_) /* switch on the operation */
-			{
-			char test[5] = "";
-			case ('T'):
-				temp_threshold++;
-				break;
-			case ('E'):
-				temp_threshold--;
-				break;
-			case ('M'):
-				moisture_threshold_upper++;
-				break;
-			case ('O'):
-				moisture_threshold_upper--;
-				break;
-			case ('X'):
-				moisture_threshold_lower++;
-				break;
-			case ('Z'):
-				moisture_threshold_lower--;
-				break;
-			case ('D'):
-				dark_threshold++;
-				break;
-			case ('A'):
-				dark_threshold--;
-				break;
-			case ('L'):
-				light_time_threshold++;
+		volatile uint8_t operator_ = uart_buffer;
+		//uint8_t digit_1 = buffer[0] - '0', digit_2 = buffer[2] - '0';
+		switch (operator_) /* switch on the operation */
+		{
+		char test[5] = "";
+		case ('T'):
+			temp_threshold++;
+			break;
+		case ('E'):
+			temp_threshold--;
+			break;
+		case ('M'):
+			moisture_threshold_upper+=409;
+			break;
+		case ('O'):
+			moisture_threshold_upper-=409;
+			break;
+		case ('X'):
+			moisture_threshold_lower+=409;
+			break;
+		case ('Z'):
+			moisture_threshold_lower-=409;
+			break;
+		case ('D'):
+			dark_threshold+=409;
+			break;
+		case ('A'):
+			dark_threshold-=409;
+			break;
+		case ('L'):
+			light_time_threshold+=144;
+			sprintf(test, "%05d", (int)light_time_threshold/144);
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			break;
+		case ('I'):
+			light_time_threshold-=144;
+			break;
+		case ('t'):
 			sprintf(test, "%05d", temp_threshold);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-				break;
-			case ('I'):
-				light_time_threshold--;
-				break;
-			case ('t'):
-				sprintf(test, "%05d", temp_threshold);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-				break;
-			case ('m'):
-				sprintf(test, "%05d", moisture_threshold_upper);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-				break;
-			case ('l'):
-				sprintf(test, "%05d", light_time_threshold);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-			case ('d'):
-				sprintf(test, "%05d", dark_threshold);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-			case ('v'):
-				sprintf(test, "%05d", moisture_threshold_lower);
-				HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
-				break;
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			break;
+		case ('m'):
+			sprintf(test, "%05d", (int)moisture_threshold_upper/409);
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			break;
+		case ('l'):
+			sprintf(test, "%05d", (int)light_time_threshold/144);
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+		case ('d'):
+			sprintf(test, "%05d", (int)dark_threshold/409);
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+		case ('v'):
+			sprintf(test, "%05d", (int)moisture_threshold_lower/409);
+			HAL_UART_Transmit(&huart1, test, 5*sizeof(uint8_t), 1000);
+			break;
 		}
 	}
   /* USER CODE END USART1_IRQn 0 */
@@ -293,6 +294,20 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM6 global interrupt, DAC channel1 and channel2 underrun error interrupts.
+  */
+void TIM6_DAC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+	time_elapsed = 1;
+  /* USER CODE END TIM6_DAC_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim6);
+  /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+
+  /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

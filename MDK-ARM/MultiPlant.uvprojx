@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32L432xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;        ../Drivers/STM32L4xx_HAL_Driver/Inc;        ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy;        ../Drivers/CMSIS/Device/ST/STM32L4xx/Include;        ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Core/Inc;              ../Drivers/STM32L4xx_HAL_Driver/Inc;              ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy;              ../Drivers/CMSIS/Device/ST/STM32L4xx/Include;              ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -393,6 +393,26 @@
         <Group>
           <GroupName>Application/User/Core</GroupName>
           <Files>
+            <File>
+              <FileName>DelayedQueue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\DelayedQueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReadyQueue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\ReadyQueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\Task.c</FilePath>
+            </File>
+            <File>
+              <FileName>Header.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\Header.c</FilePath>
+            </File>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
